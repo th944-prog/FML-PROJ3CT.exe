@@ -16,7 +16,6 @@ const noBtn = document.getElementById("noBtn");
 
 const funnyText = document.getElementById("funnyText");
 
-const walkingCat = document.getElementById("walkingCat");
 const envelope = document.getElementById("envelope");
 const letter = document.getElementById("letter");
 const letterText = document.getElementById("letterText");
@@ -48,17 +47,25 @@ const loader = setInterval(() => {
 // Music
 // ----------------------
 
-musicToggle.addEventListener("click", () => {
+musicToggle.addEventListener("click", async () => {
 
-    if (music.paused) {
+    try {
 
-        music.play();
-        musicToggle.innerHTML = "🔊 MUSIC";
+        if (music.paused) {
 
-    } else {
+            await music.play();
+            musicToggle.innerHTML = "🔇 STOP";
 
-        music.pause();
-        musicToggle.innerHTML = "🔇 MUSIC";
+        } else {
+
+            music.pause();
+            musicToggle.innerHTML = "🔊 MUSIC";
+
+        }
+
+    } catch (err) {
+
+        alert("Tap the screen once, then press MUSIC again.");
 
     }
 
@@ -70,7 +77,12 @@ musicToggle.addEventListener("click", () => {
 
 cats.forEach(cat => {
 
-    cat.addEventListener("click", () => {
+    cat.addEventListener("click", async () => {
+
+        try {
+            await music.play();
+            musicToggle.innerHTML = "🔇 STOP";
+        } catch (e) {}
 
         homeScreen.classList.add("hidden");
         questionScreen.classList.remove("hidden");
@@ -80,7 +92,7 @@ cats.forEach(cat => {
 });
 
 // ----------------------
-// No Button Runs Away
+// Funny Messages
 // ----------------------
 
 const funnyMessages = [
@@ -93,15 +105,33 @@ const funnyMessages = [
 
 ];
 
-noBtn.addEventListener("mouseover", () => {
+// ----------------------
+// NO Button Runs Away
+// ----------------------
 
-    const x = Math.random() * 250 - 125;
-    const y = Math.random() * 180 - 90;
+function moveNoButton() {
 
-    noBtn.style.transform = `translate(${x}px,${y}px)`;
+    const maxX = window.innerWidth - noBtn.offsetWidth - 20;
+    const maxY = window.innerHeight - noBtn.offsetHeight - 20;
+
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+
+    noBtn.style.position = "fixed";
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
 
     funnyText.innerHTML =
         funnyMessages[Math.floor(Math.random() * funnyMessages.length)];
+
+}
+
+noBtn.addEventListener("mouseover", moveNoButton);
+
+noBtn.addEventListener("touchstart", function(e){
+
+    e.preventDefault();
+    moveNoButton();
 
 });
 
@@ -125,6 +155,8 @@ yesBtn.addEventListener("click", () => {
 function startLetter() {
 
     envelope.style.opacity = "0";
+    envelope.style.display = "block";
+
     letter.style.display = "none";
     letterText.innerHTML = "";
 
@@ -170,6 +202,8 @@ Love you always. ❤️`;
 function typeLetter() {
 
     let i = 0;
+
+    letterText.innerHTML = "";
 
     const typer = setInterval(() => {
 
@@ -221,4 +255,4 @@ function celebrate() {
 
     }, 300);
 
-}
+    }
